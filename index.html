@@ -1,15 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Commerce Frontend</title>
-    <link rel="stylesheet" href="styles/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Commerce Frontend</title>
+  <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-    <header>
-        <h1>Welcome to Our Online Store</h1>
-    </header>
-    <script src="scripts/app.js"></script>
+  <header class="header">
+    <div class="logo">SHOPY</div>
+
+    <nav class="nav" id="nav-menu">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Products</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="search-cart">
+      <input type="text" placeholder="Search products..." class="search-bar">
+      <div class="cart-icon">
+        🛒
+        <span class="cart-badge">3</span>
+      </div>
+      <button class="hamburger" id="hamburger">&#9776;</button>
+    </div>
+  </header>
+  <section class="hero-section">
+    <div class="hero-overlay">
+      <h1>Biggest Sale of the Year!</h1>
+      <p>Get up to 70% off on our latest arrivals. Limited time only!</p>
+      <a href="#" class="hero-btn">Shop Now</a>
+    </div>
+  </section>
+  <script src="scripts/app.js"></script>
 </body>
 </html>
