@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup - SHOPY</title>
+  <link rel="stylesheet" href="main.css">
+  <style>
+    body {
+      background: url('../ecommerce-frontend/images/yngwmn.jpg') no-repeat center center/cover;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .form-container {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+      text-align: left;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+  </style>
+
+<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  const firebaseConfig = {
+  apiKey: "AIzaSyAxxmu9B6kVOurKp_aiODh5sx73whbHlGM",
+  authDomain: "shopyecommerce-b1a71.firebaseapp.com",
+  projectId: "shopyecommerce-b1a71",
+  storageBucket: "shopyecommerce-b1a71.firebasestorage.app",
+  messagingSenderId: "482185659081",
+  appId: "1:482185659081:web:ddbc72bac154a727928318"
+};
+  </script>
+  <script>
+  const app = initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .then(() => {
+    console.log("Session persistence set to LOCAL");
+  })
+  .catch((error) => {
+    console.error("Error setting persistence:", error);
+  });
+
+  firebase.auth().onAuthStateChanged((user) => {
+    const navMenu = document.getElementById('nav-menu');
+
+    if (user) {
+      console.log('User is logged in:', user.email);
+
+      if (navMenu) {
+        const loginLink = navMenu.querySelector('a[href="login.html"]');
+        if (loginLink) {
+          loginLink.textContent = 'Logout';
+          loginLink.href = '#';
+          loginLink.addEventListener('click', () => {
+            firebase.auth().signOut().then(() => {
+              alert('✅ Logged out successfully!');
+              window.location.reload();
+            });
+          });
+        }
+      }
+
+    } else {
+      console.log('User is not logged in.');
+    }
+  });
+  firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="logo">SHOPY</div>
+    <nav id="nav-menu" class="nav">
+      <a href="index.html">Home</a>
+      <a href="login.html" id="login-link">Login</a>
+      <a href="#" id="logout-link" style="display: none;">Logout</a>
+      <a href="product.html">Products</a>
+      <a href="login.html">Login</a>
+    </nav>
+    <div class="search-cart">
+      <input type="text" placeholder="Search products..." class="search-bar">
+      <div class="cart-icon">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge" id="cart-count">0</span>
+      </div>
+      <button class="hamburger" id="hamburger">&#9776;</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <h2>Signup</h2>
+      <form id="signup-form">
+        <label>Name:</label><br>
+        <input type="text" required style="width: 100%; padding: 10px; margin-bottom: 1rem;"><br>
+      
+        <label>Email:</label><br>
+        <input type="email" id="signup-email" required style="width: 100%; padding: 10px; margin-bottom: 0.5rem;"><br>
+        <div id="email-error" style="color: red; margin-bottom: 1rem;"></div>
+
+        <label>Password:</label><br>
+        <input type="password" id="signup-password" required style="width: 100%; padding: 10px; margin-bottom: 0.5rem;"><br>
+        <div id="password-error" style="color: red; margin-bottom: 1rem;"></div>
+
+        <label>Confirm Password:</label><br>
+        <input type="password" id="confirm-password" required style="width: 100%; padding: 10px; margin-bottom: 0.5rem;"><br>
+        <div id="confirm-password-error" style="color: red; margin-bottom: 1rem;"></div>
+
+        <button type="submit" style="width: 100%; padding: 12px;">Signup</button>
+      </form>
+      
+      <script>
+        document.getElementById('signup-form').addEventListener('input', function(e) {
+          const email = document.getElementById('signup-email').value.trim();
+          const password = document.querySelectorAll('input[type="password"]')[0].value;
+          const confirmPassword = document.querySelectorAll('input[type="password"]')[1].value;
+        
+          const emailError = document.getElementById('email-error');
+          const passwordError = document.getElementById('password-error');
+          const confirmPasswordError = document.getElementById('confirm-password-error');
+        
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+        
+          if (!emailRegex.test(email)) {
+            emailError.textContent = "❌ Invalid email address.";
+          } else {
+            emailError.textContent = "";
+          }
+        
+          if (!passwordRegex.test(password)) {
+            passwordError.textContent = "❌ Password must be at least 8 characters, include uppercase, lowercase, and a number.";
+          } else {
+            passwordError.textContent = "";
+          }
+        
+          if (confirmPassword && password !== confirmPassword) {
+            confirmPasswordError.textContent = "❌ Passwords do not match.";
+          } else {
+            confirmPasswordError.textContent = "";
+          }
+        });
+        
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+          e.preventDefault();
+        
+          if (
+            document.getElementById('email-error').textContent ||
+            document.getElementById('password-error').textContent ||
+            document.getElementById('confirm-password-error').textContent
+          ) {
+            alert('❌ Please fix the errors before submitting.');
+            return;
+          }
+        
+          alert('✅ Signup successful!');
+        });
+        const auth = firebase.auth();
+
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('signup-email').value.trim();
+        const password = document.getElementById('signup-password').value.trim();
+        const confirmPassword = document.getElementById('confirm-password').value.trim();
+
+        if (password !== confirmPassword) {
+        alert('❌ Passwords do not match.');
+        return;
+      }
+
+      auth.createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log('User created:', user);
+        alert('✅ Signup successful! You can now log in.');
+        window.location.href = 'login.html';
+      })
+      .catch((error) => {
+      const errorCode = error.code;
+      let errorMessage = '❌ Something went wrong. Please try again.';
+
+      if (errorCode === 'auth/email-already-in-use') {
+      errorMessage = '❌ This email is already registered. Try logging in.';
+    } else if (errorCode === 'auth/invalid-email') {
+      errorMessage = '❌ Please enter a valid email address.';
+    } else if (errorCode === 'auth/weak-password') {
+      errorMessage = '❌ Password must be at least 6 characters long.';
+    }
+
+  alert(errorMessage);
+});
+
+  });
+
+  const loginLink = document.getElementById('login-link');
+  const logoutLink = document.getElementById('logout-link');
+
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      loginLink.style.display = 'none';
+      logoutLink.style.display = 'inline-block';
+
+      logoutLink.addEventListener('click', () => {
+        firebase.auth().signOut()
+          .then(() => {
+            console.log('✅ Signed out successfully.');
+            window.location.href = 'login.html';
+          })
+          .catch((error) => {
+            console.error('❌ Error signing out:', error);
+          });
+      });
+
+    } else {
+      loginLink.style.display = 'inline-block';
+      logoutLink.style.display = 'none';
+    }
+  }); 
+    </script>         
+      <p style="margin-top: 1rem;">Already have an account? <a href="login.html">Login here</a>.</p>
+    </div>
+  </main>
+</body>
+</html>

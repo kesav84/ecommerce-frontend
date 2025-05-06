@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Details</title>
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1 class="logo">ShopSmart</h1>
+      <nav id="nav-menu" class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="login.html" id="login-link">Login</a>
+        <a href="#" id="logout-link" style="display: none;">Logout</a>
+        <a href="#" class="cart-link">Cart (<span id="cart-count">0</span>)</a>
+      </nav>      
+    </div>
+  </header>
+
+  <main class="product-detail"> 
+    <div class="product-image-gallery">
+      <img id="main-image" src="" alt="Product Image" class="main-image">
+      <div class="thumbnails">
+       </div>
+    </div>
+
+    <div id="add-success" class="success-message hidden">Added to cart!</div>
+
+    <div class="product-info">
+      <h2 id="product-title">Product Name</h2>
+      <p class="price" id="product-price">$0.00</p>
+      <p class="description" id="product-description">Product description...</p>
+
+        <div class="variation-group">
+          <label>Size:</label>
+          <div class="option-group" id="size-options">
+            <button class="variation-btn selected" data-value="Small">S</button>
+            <button class="variation-btn" data-value="Medium">M</button>
+            <button class="variation-btn" data-value="Large">L</button>
+            <button class="variation-btn" data-value="XL" disabled>XL</button>
+          </div>
+        </div>
+  
+        <label for="color">Color:</label>
+        <select id="color">
+          <option>Red</option>
+          <option>Blue</option>
+          <option>Black</option>
+        </select>
+        <div class="variation-group">
+          <div class="option-group" id="color-options">
+            <button class="variation-btn color-btn selected" data-value="Red" style="background-color: red;"></button>
+            <button class="variation-btn color-btn" data-value="Blue" style="background-color: blue;"></button>
+            <button class="variation-btn color-btn" data-value="Black" style="background-color: black;" disabled></button>
+          </div>
+        </div>
+        <div class="quantity-selector">
+          <button id="decrease">-</button>
+          <span id="quantity">1</span>
+          <button id="increase">+</button>
+        </div>
+        
+        <p>Total Price: $<span id="total-price">0.00</span></p>
+        
+      </div>
+        <button class="buy-btn">Add to Cart</button>
+    </div>
+  </main>
+  
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 ShopSmart. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+
+    const products = [
+      {
+        id: 1,
+        title: "Product One",
+        price: 29.99,
+        image: "https://via.placeholder.com/400x400",
+        description: "This is the description for Product One."
+      },
+      {
+        id: 2,
+        title: "Product Two",
+        price: 49.99,
+        image: "https://via.placeholder.com/400x400",
+        description: "This is the description for Product Two."
+      },
+      {
+        id: 3,
+        title: "Product Three",
+        price: 99.99,
+        image: "https://via.placeholder.com/400x400",
+        description: "This is the description for Product Three."
+      }
+    ];
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = parseInt(urlParams.get('id'));
+
+    const cachedProducts = localStorage.getItem("products");
+    if (cachedProducts) {
+    const products = JSON.parse(cachedProducts);
+    const product = products.find(p => p.id === productId);
+
+    if (product) {
+      const mainImage = document.getElementById('main-image');
+      mainImage.src = product.image;
+      mainImage.alt = product.title;
+
+      document.getElementById('product-title').textContent = product.title;
+      document.getElementById('product-price').textContent = `$${product.price.toFixed(2)}`;
+      document.getElementById('product-description').textContent = product.description;
+
+      const thumbnails = document.querySelector('.thumbnails');
+      for (let i = 0; i < 3; i++) {
+        const thumb = document.createElement('img');
+        thumb.src = product.image;
+        thumb.alt = `View ${i+1}`;
+        if (i === 0) thumb.classList.add("selected");
+        thumb.addEventListener('click', () => {
+          document.querySelectorAll('.thumbnails img').forEach(img => img.classList.remove('selected'));
+          thumb.classList.add('selected');
+          mainImage.src = thumb.src;
+        });
+        thumbnails.appendChild(thumb);
+      }
+    } else {
+      document.querySelector('main').innerHTML = '<p>Product not found.</p>';
+    }
+  } else {
+    document.querySelector('main').innerHTML = '<p>No product data found. Visit the homepage first.</p>';
+  }
+
+  document.querySelectorAll('.option-group').forEach(group => {
+  group.addEventListener('click', (e) => {
+    const btn = e.target;
+    if (!btn.classList.contains('variation-btn') || btn.disabled) return;
+
+    group.querySelectorAll('.variation-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  });
+});
+
+document.querySelector('.buy-btn').addEventListener('click', () => {
+  const size = document.querySelector('#size-options .selected')?.dataset.value || 'Default';
+  const color = document.querySelector('#color-options .selected')?.dataset.value || 'Default';
+  const quantity = parseInt(document.getElementById('quantity').textContent, 10) || 1;
+
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+  const cartItem = {
+    id: product.id,
+    title: product.title,
+    price: product.price,
+    image: product.image,
+    size,
+    color,
+    quantity
+  };
+
+  const existingIndex = cart.findIndex(
+    item => 
+    item.id === cartItem.id && 
+    item.size === cartItem.size && 
+    item.color === cartItem.color
+  );
+
+  if (existingIndex > -1) {
+    cart[existingIndex].quantity += quantity;
+  } else {
+    cart.push(cartItem);
+  }
+  
+const successMsg = document.getElementById('add-success');
+successMsg.textContent = `✅ Added "${product.title}" (${size}, ${color}) x${quantity} to cart!`;
+successMsg.classList.add('show');
+
+setTimeout(() => {
+  successMsg.classList.remove('show');
+}, 2000);
+
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartCount();
+  alert(`✅ Added "${product.title}" x${quantity} (${size}, ${color}) to cart.`);
+});
+
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const countEl = document.getElementById('cart-count');
+  if (countEl) countEl.textContent = total;
+}
+
+function removeFromCart(productId, size, color) {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const updatedCart = cart.filter(item => 
+    !(item.id === productId && item.size === size && item.color === color)
+  );
+  localStorage.setItem('cart', JSON.stringify(updatedCart));
+  updateCartCount();
+}
+
+updateCartCount();
+
+const pricePerItem = parseFloat(document.querySelector('.price').textContent.replace('$', ''));
+const quantityEl = document.getElementById('quantity');
+const totalPriceEl = document.getElementById('total-price');
+
+let quantity = 1;
+let maxQuantity = 10;
+
+function updateTotalPrice() {
+  totalPriceEl.textContent = (pricePerItem * quantity).toFixed(2);
+}
+
+document.getElementById('increase').addEventListener('click', () => {
+  if (quantity < maxQuantity) {
+    quantity++;
+    quantityEl.textContent = quantity;
+    updateTotalPrice();
+  }
+});
+
+document.getElementById('decrease').addEventListener('click', () => {
+  if (quantity > 1) {
+    quantity--;
+    quantityEl.textContent = quantity;
+    updateTotalPrice();
+  }
+});
+
+updateTotalPrice();
+
+const selectedVariation = document.getElementById('variation') 
+                         ? document.getElementById('variation').value 
+                         : null;
+
+const cartItem = {
+  id: product.id,
+  title: product.title,
+  price: product.price,
+  image: product.image,
+  quantity: quantity,
+  variation: selectedVariation
+};
+firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+  
+  const loginLink = document.getElementById('login-link');
+  const logoutLink = document.getElementById('logout-link');
+
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      loginLink.style.display = 'none';
+      logoutLink.style.display = 'inline-block';
+
+      logoutLink.addEventListener('click', () => {
+        firebase.auth().signOut()
+          .then(() => {
+            console.log('✅ Signed out successfully.');
+            window.location.href = 'login.html';
+          })
+          .catch((error) => {
+            console.error('❌ Error signing out:', error);
+          });
+      });
+
+    } else {
+      loginLink.style.display = 'inline-block';
+      logoutLink.style.display = 'none';
+    }
+  });
+</script>
+</body>
+</html>

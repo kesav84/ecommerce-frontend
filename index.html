@@ -5,25 +5,100 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Commerce Frontend</title>
   <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  const firebaseConfig = {
+  apiKey: "AIzaSyAxxmu9B6kVOurKp_aiODh5sx73whbHlGM",
+  authDomain: "shopyecommerce-b1a71.firebaseapp.com",
+  projectId: "shopyecommerce-b1a71",
+  storageBucket: "shopyecommerce-b1a71.firebasestorage.app",
+  messagingSenderId: "482185659081",
+  appId: "1:482185659081:web:ddbc72bac154a727928318"
+};
+</script>
+<script>
+  const loginLink = document.getElementById('login-link');
+  const logoutLink = document.getElementById('logout-link');
+
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      loginLink.style.display = 'none';
+      logoutLink.style.display = 'inline-block';
+
+      logoutLink.addEventListener('click', () => {
+        firebase.auth().signOut()
+          .then(() => {
+            console.log('✅ Signed out successfully.');
+            window.location.href = 'login.html';
+          })
+          .catch((error) => {
+            console.error('❌ Error signing out:', error);
+          });
+      });
+
+    } else {
+      loginLink.style.display = 'inline-block';
+      logoutLink.style.display = 'none';
+    }
+  });
+
+  const app = initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .then(() => {
+    console.log("Session persistence set to LOCAL");
+  })
+  .catch((error) => {
+    console.error("Error setting persistence:", error);
+  });
+  firebase.auth().onAuthStateChanged((user) => {
+    const navMenu = document.getElementById('nav-menu');
+
+    if (user) {
+
+      console.log('User is logged in:', user.email);
+
+      if (navMenu) {
+        const loginLink = navMenu.querySelector('a[href="login.html"]');
+        if (loginLink) {
+          loginLink.textContent = 'Logout';
+          loginLink.href = '#';
+          loginLink.addEventListener('click', () => {
+            firebase.auth().signOut().then(() => {
+              alert('✅ Logged out successfully!');
+              window.location.reload();
+            });
+          });
+        }
+      }
+
+    } else {
+      console.log('User is not logged in.');
+    }
+  });
+</script>
 </head>
 <body>
   <header class="header">
     <div class="logo">SHOPY</div>
 
-    <nav class="nav" id="nav-menu">
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Products</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
+    <nav id="nav-menu" class="nav">
+      <a href="index.html">Home</a>
+      <a href="login.html" id="login-link">Login</a>
+      <a href="#" id="logout-link" style="display: none;">Logout</a>
     </nav>
 
     <div class="search-cart">
       <input type="text" placeholder="Search products..." class="search-bar">
       <div class="cart-icon">
-        🛒
-        <span class="cart-badge">3</span>
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge" id="cart-count">0</span>
       </div>
       <button class="hamburger" id="hamburger">&#9776;</button>
     </div>
@@ -39,6 +114,16 @@
     <h2>Featured Products</h2>
     <div id="product-grid" class="product-grid"></div>
   </section>
-   <script src="scripts/app.js"></script>
+  <script src="scripts/app.js"></script>
+  
+<script>
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const countEl = document.getElementById('cart-count');
+  if (countEl) countEl.textContent = total;
+}
+updateCartCount();
+</script>
 </body>
-</html>
+</html> 
