@@ -22,7 +22,21 @@
 
   <main class="product-detail"> 
     <div class="product-image-gallery">
-      <img id="main-image" src="" alt="Product Image" class="main-image">
+      <img 
+  alt="Product Image"
+  class="main-image"
+  id="main-image"
+  src="images/product-768w.webp"
+  srcset="
+    images/product-480w.webp 480w,
+    images/product-768w.webp 768w,
+    images/product-1200w.webp 1200w
+  "
+  sizes="(max-width: 600px) 480px, (max-width: 900px) 768px, 1200px"
+  width="768"
+  height="768"
+  loading="lazy"
+  />
       <div class="thumbnails">
        </div>
     </div>
@@ -84,21 +98,21 @@
         id: 1,
         title: "Product One",
         price: 29.99,
-        image: "https://via.placeholder.com/400x400",
+        image: "https://via.placeholder.com/100x100",
         description: "This is the description for Product One."
       },
       {
         id: 2,
         title: "Product Two",
         price: 49.99,
-        image: "https://via.placeholder.com/400x400",
+        image: "https://via.placeholder.com/100x100",
         description: "This is the description for Product Two."
       },
       {
         id: 3,
         title: "Product Three",
         price: 99.99,
-        image: "https://via.placeholder.com/400x400",
+        image: "https://via.placeholder.com/100x100",
         description: "This is the description for Product Three."
       }
     ];

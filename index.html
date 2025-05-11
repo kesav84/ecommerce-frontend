@@ -6,6 +6,8 @@
   <title>E-Commerce Frontend</title>
   <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://your-cdn-domain.com/assets/main.min.css">
+<script src="https://your-cdn-domain.com/assets/app.min.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
 
@@ -102,7 +104,7 @@
       </div>
       <button class="hamburger" id="hamburger">&#9776;</button>
     </div>
-  </header>
+  </header> 
   <section class="hero-section">
     <div class="hero-overlay">
       <h1>Biggest Sale of the Year!</h1>
@@ -124,6 +126,19 @@ function updateCartCount() {
   if (countEl) countEl.textContent = total;
 }
 updateCartCount();
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (!('loading' in HTMLImageElement.prototype)) {
+      const images = document.querySelectorAll('img[loading="lazy"]');
+      images.forEach(img => {
+        const src = img.getAttribute('src');
+        if (src) {
+          img.src = src;
+        }
+      });
+    }
+  });
 </script>
 </body>
 </html> 
